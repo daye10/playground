@@ -1,0 +1,9 @@
+langchain
+openai
+faiss-cpu      
+python-dotenv
+requests
+dotenv
+langchain-openai
+langchain-community
+msal
