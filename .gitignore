@@ -6,3 +6,5 @@ azure-pr-review-bot/teams_payload.json
 gmail-ai-digest/credentials.json
 gmail-ai-digest/token.pickle
 *.pyc
+rr_state.json
+teams_payload.json
