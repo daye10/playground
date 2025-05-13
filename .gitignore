@@ -1,5 +1,8 @@
 .env
 env
-expertise_index
-rr_state.json
-teams_payload.json
+azure-pr-review-bot/expertise_index
+azure-pr-review-bot/rr_state.json
+azure-pr-review-bot/teams_payload.json
+gmail-ai-digest/credentials.json
+gmail-ai-digest/token.pickle
+*.pyc
