@@ -1,6 +1,6 @@
 import math
 from indexer import Indexer 
-from typing import List, Dict, Tuple, Set, Any # 'Any' can be used if Indexer structure isn't fully known here
+from typing import List, Dict, Tuple, Set, 
 
 class SearchEngine:
     """
@@ -21,15 +21,13 @@ class SearchEngine:
                      the attributes: `inverted_index`, `doc_lengths`, `N` (total
                      number of documents), and `avgdl` (average document length).
         """
-        # Directly use attributes as they were in the original code, assuming they exist
-        # on the provided indexer object.
+
         self.inverted_index: Dict[str, List[Tuple[str, int]]] = indexer.inverted_index
         self.document_lengths: Dict[str, int] = indexer.doc_lengths
         self.total_docs_in_collection: int = indexer.N
         self.average_doc_length: float = indexer.avgdl
 
-        # Validate that essential attributes from the indexer are present
-        # This relies on duck typing; if it walks like an indexer and quacks like an indexer...
+
         for attr_name in ['inverted_index', 'doc_lengths', 'N', 'avgdl']:
             if not hasattr(indexer, attr_name):
                 raise AttributeError(f"The provided 'indexer' object is missing the required attribute: '{attr_name}'")
@@ -41,29 +39,22 @@ class SearchEngine:
                  raise ValueError("Indexer's 'avgdl' (average document length) must be positive if N > 0.")
 
 
-        # Precompute Inverse Document Frequency (IDF) for each term using BM25's IDF variant.
         self.idf_scores: Dict[str, float] = {}
         for term, postings in self.inverted_index.items():
-            # df is the document frequency of the term (number of documents containing the term)
             document_frequency = len(postings)
             
-            # IDF formula for BM25 (Robertson-Spärck Jones IDF variant):
-            # log( (N - df + 0.5) / (df + 0.5) + 1 )
-            # This form is robust and handles df = N gracefully.
+
             idf_numerator = self.total_docs_in_collection - document_frequency + 0.5
             idf_denominator = document_frequency + 0.5
             
-            # Ensure denominator is not zero (shouldn't happen if term is in inverted_index
-            # and postings list is not empty, implying df > 0)
-            if idf_denominator <= 0: # Should strictly be > 0.5 if df >= 0
-                 self.idf_scores[term] = 0.0 # Or some other default/warning for an unlikely case
+
+            if idf_denominator <= 0: 
+                 self.idf_scores[term] = 0.0
             else:
-                # The +1 inside the log ensures the argument to log is > 1 (making IDF > 0).
-                # If idf_numerator becomes 0 or negative (e.g., df > N + 0.5), math.log would fail.
-                # However, with df <= N, (N - df + 0.5) should be >= 0.5.
+
                 value_for_log = (idf_numerator / idf_denominator) + 1.0
-                if value_for_log <= 0 : # Safety check for log's domain
-                    self.idf_scores[term] = 0.0 # Term provides no or negative information, assign neutral IDF
+                if value_for_log <= 0 :
+                    self.idf_scores[term] = 0.0 
                 else:
                     self.idf_scores[term] = math.log(value_for_log)
 
@@ -88,8 +79,7 @@ class SearchEngine:
         if not query_string:
             return []
 
-        # Simple tokenization. For a real system, use the same tokenizer as the Indexer.
-        # Assuming terms in the index are, for instance, lowercased.
+
         processed_query_terms: Set[str] = set(query_string.lower().split())
         if not processed_query_terms or (len(processed_query_terms) == 1 and "" in processed_query_terms):
             return []
@@ -98,14 +88,13 @@ class SearchEngine:
         document_scores: Dict[str, float] = {}
 
         for term in processed_query_terms:
-            if not term: # Skip empty strings resulting from split if any
+            if not term:
                 continue
             
             term_idf: float = self.idf_scores.get(term, 0.0)
-            if term_idf == 0.0: # Term is not in index or has no discriminatory power
+            if term_idf == 0.0: 
                 continue
 
-            # Postings list: List[Tuple[document_id, term_frequency_in_doc]]
             if term in self.inverted_index:
                 for document_id, term_freq_in_doc in self.inverted_index[term]:
                     doc_length: int = self.document_lengths.get(document_id, 0)
@@ -114,8 +103,6 @@ class SearchEngine:
                     if doc_length <= 0 or (self.average_doc_length <= 0 and self.total_docs_in_collection > 0) :
                         continue
 
-                    # BM25 score component for this term in this document
-                    # Numerator part of the term weight
                     numerator = term_freq_in_doc * (k1 + 1)
                     # Denominator part of the term weight
                     denominator = term_freq_in_doc + k1 * (
@@ -151,14 +138,11 @@ class SearchEngine:
         if not query_terms:
             return []
 
-        # Normalize query terms (e.g., lowercase and unique)
-        # Assuming terms in index are lowercased.
+
         processed_unique_terms = set(term.lower() for term in query_terms if term)
         if not processed_unique_terms:
             return []
 
-        # Retrieve document ID lists (postings) for each term.
-        # Assumes postings lists from the indexer are sorted by document_id.
         term_postings_lists: List[List[str]] = []
         for term in processed_unique_terms:
             if term in self.inverted_index:
@@ -172,7 +156,7 @@ class SearchEngine:
                 # If any term is not in the index, the AND result is empty.
                 return []
         
-        if not term_postings_lists: # Should be caught by previous checks, but as a safeguard.
+        if not term_postings_lists: #  safeguard.
             return []
 
         # Sort lists by length to start intersection with the smallest list (optimization)
