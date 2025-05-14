@@ -2,6 +2,7 @@
 
 A simple Python CLI app that indexes a collection of local text files and provides functionalities for searching and exploring that content. It features BM25-ranked search, boolean AND search with skip-pointer optimization, and prefix-based autocomplete suggestions for search terms.
 
+**TODO**: Implement wildcards search
 ## Features
 
 * **Local File Indexing:** Indexes `.txt` files from a specified directory.

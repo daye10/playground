@@ -133,11 +133,12 @@ def build_expertise_index() -> None:
     for pr in prs:
         pr_id = pr.get("pullRequestId")
         title = pr.get("title", "Untitled PR")
-        text = fetch_pr_diff_content(pr_id)
+        text = fetch_pr_diff_content(pr_id) 
         reviewers = [r.get("uniqueName") for r in pr.get("reviewers", []) if r.get("uniqueName")]
         for reviewer in reviewers:
-            content = f"Title: {title}\n{ text }"
-            metadata = {"reviewer": reviewer, "pr_id": pr_id}
+            content = f"Past Reviewer: {reviewer}\nPull Request ID: {pr_id}\nTitle: {title}\nChanges Summary:\n{text}"
+            
+            metadata = {"reviewer": reviewer, "pr_id": pr_id} 
             docs.append(Document(page_content=content, metadata=metadata))
 
     if not docs:

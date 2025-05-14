@@ -175,6 +175,7 @@ class PRReviewBot:
             out = self.rag.invoke({"input": summary, "num_optionals": self.num_optional})
             ans = out.get("answer", "")
             names = [n.strip() for n in ans.split(",") if n.strip() and "no optional" not in n.lower()]
+            logging.info(f"Recommended optional reviewers: {names}")
             return names[: self.num_optional]
         except Exception as e:
             logging.error(f"Optional recommendation error: {e}")
@@ -193,6 +194,8 @@ class PRReviewBot:
         with open("teams_payload.json", "w") as f:
             json.dump(payload, f, indent=2)
         try:
+            logging.info(f"Sending Teams notification...")
+            logging.debug(f"Payload: {payload}")
             r = requests.post(self.teams_webhook, json=payload, timeout=15)
             r.raise_for_status()
             logging.info("Teams notification sent.")
