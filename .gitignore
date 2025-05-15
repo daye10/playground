@@ -8,3 +8,5 @@ gmail-ai-digest/token.pickle
 *.pyc
 rr_state.json
 teams_payload.json
+*.zip
+image-processor-aws/lambda_function/package

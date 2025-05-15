@@ -1,0 +1,25 @@
+{% extends "_base.html" %}
+
+{% block title %}{{ page_title or "Image Uploader" }}{% endblock %}
+
+{% block content %}
+<section id="upload-section">
+    <h2>Upload Your Image</h2>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="imageFile" name="imageFile" accept="image/png, image/jpeg, image/gif" required>
+        <button type="submit">Upload Image</button>
+    </form>
+    <div id="uploadStatus"></div>
+</section>
+
+<section id="gallery-section">
+    <h2>Uploaded Images</h2>
+    <button id="refreshImages">Refresh Images</button>
+    <div id="imageGallery" class="gallery-grid">
+        <p id="galleryMessage">No images loaded yet. Upload an image or click "Refresh Images".</p>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts_extra %}
+    {% endblock %}
