@@ -10,3 +10,4 @@ rr_state.json
 teams_payload.json
 *.zip
 image-processor-aws/lambda_function/package
+azure-pr-review-bot/codebase_context_index/
